@@ -13,7 +13,7 @@ namespace MarioKartStatistics.Migrations
         {
             get
             {
-                return "201412031851572_initial";
+                return "201412041848432_initial";
             }
         }
         
@@ -33,6 +33,7 @@ namespace MarioKartStatistics.Migrations
                 
                 builder.Entity("MarioKartStatistics.Heat", b =>
                     {
+                        b.Property<DateTime>("Date");
                         b.Property<int>("Id")
                             .GenerateValuesOnAdd();
                         b.Key("Id");

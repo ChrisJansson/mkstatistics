@@ -12,7 +12,8 @@ namespace MarioKartStatistics.Migrations
             migrationBuilder.CreateTable("Heat",
                 c => new
                     {
-                        Id = c.Int(nullable: false, identity: true)
+                        Id = c.Int(nullable: false, identity: true),
+                        Date = c.DateTime(nullable: false)
                     })
                 .PrimaryKey("PK_Heat", t => t.Id);
             

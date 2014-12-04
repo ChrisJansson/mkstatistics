@@ -17,6 +17,7 @@ namespace MarioKartStatistics.Migrations
                 
                 builder.Entity("MarioKartStatistics.Heat", b =>
                     {
+                        b.Property<DateTime>("Date");
                         b.Property<int>("Id")
                             .GenerateValuesOnAdd();
                         b.Key("Id");

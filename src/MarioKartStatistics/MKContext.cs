@@ -31,14 +31,16 @@ namespace MarioKartStatistics
     {
         public int Id { get; protected set; }
 
-        public List<HeatScore> Scores { get; set; }
+        public DateTime Date { get; set; }
+
+        public virtual List<HeatScore> Scores { get; set; }
     }
 
     public class HeatScore
     {
         public int Id { get; protected set; }
         public int HeatId { get; protected set; }
-        public Player Player { get; set; }
+        public virtual Player Player { get; set; }
         public int Score { get; set; }
     }
 
