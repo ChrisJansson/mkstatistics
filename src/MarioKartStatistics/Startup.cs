@@ -10,7 +10,9 @@ namespace MarioKartStatistics
         public void ConfigureServices(IServiceCollection services)
         {
             var configuration = new Configuration();
-            configuration.AddJsonFile("config.json");
+            configuration
+                .AddJsonFile("config.json")
+                .AddEnvironmentVariables();
 
             services.AddEntityFramework(configuration)
                 .AddSqlServer()

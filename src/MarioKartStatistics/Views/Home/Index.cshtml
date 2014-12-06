@@ -53,20 +53,20 @@
             }
         </table>
         <h1>NEW</h1>
-        @using (Html.BeginForm("AddResult", "Home", FormMethod.Post, new { @class = "form-inline", role = "form" }))
+        @using (Html.BeginForm("AddResult", "Home", FormMethod.Post, new { @class = "form-vertical", role = "form" }))
         {
-            <table>
+            <table class="col-md-4">
                 <thead>
                     <tr>
-                        <td class="col-md-3">Player</td>
-                        <td class="col-md-3">Points</td>
+                        <td class="col-md-2">Player</td>
+                        <td class="col-md-1">Points</td>
                     </tr>
                 </thead>
                 <tbody>
                     @for (var i = 0; i < 4; i++)
                     {
                         <tr>
-                            <td>
+                            <td class="col-md-2">
                                 <div class="form-group">
                                     <select class="form-control">
                                         <option value="0">A</option>
@@ -74,9 +74,9 @@
                                     </select>
                                 </div>
                             </td>
-                            <td>
+                            <td class="col-md-1">
                                 <div class="form-group">
-                                    <input type="number" class="form-control"/>
+                                    <input type="number" class="form-control" />
                                 </div>
                             </td>
                         </tr>
@@ -90,7 +90,6 @@
             </div>
         }
     </div>
-
     <script src="~/lib/jquery/jquery.js"></script>
     <script src="~/lib/bootstrap/bootstrap.js"></script>
 </body>

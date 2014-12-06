@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNet.Mvc;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
@@ -49,6 +50,12 @@ namespace MarioKartStatistics.Controllers
             return View(heats);
         }
 
+        [HttpPost]
+        public void AddResult(NewHeatResult result)
+        {
+
+        }
+
         private HeatModel Convert(Heat heat)
         {
             return new HeatModel()
@@ -64,6 +71,20 @@ namespace MarioKartStatistics.Controllers
                 .ToList()
             };
         }
+    }
+
+    public class NewHeatResult
+    {
+        [Required]
+        IList<NewHeatScore> Scores { get; set; }
+    }
+
+    public class NewHeatScore
+    {
+        [Required]
+        public int? Player { get; set; }
+        [Required]
+        public int? Points { get; set; }
     }
 
     public class HeatModel
