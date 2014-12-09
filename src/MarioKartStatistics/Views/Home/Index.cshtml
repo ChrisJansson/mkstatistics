@@ -68,7 +68,8 @@
                         <tr>
                             <td class="col-md-2">
                                 <div class="form-group">
-                                    <select class="form-control">
+                                    <select name="Scores[@i].Player" class="form-control">
+                                        <option selected disabled hidden value=""></option>
                                         <option value="0">A</option>
                                         <option value="1">B</option>
                                     </select>
@@ -76,7 +77,7 @@
                             </td>
                             <td class="col-md-1">
                                 <div class="form-group">
-                                    <input type="number" class="form-control" />
+                                    <input name="Scores[@i].Points" type="number" class="form-control" />
                                 </div>
                             </td>
                         </tr>
@@ -92,5 +93,6 @@
     </div>
     <script src="~/lib/jquery/jquery.js"></script>
     <script src="~/lib/bootstrap/bootstrap.js"></script>
+    <script src="~/lib/knockout/knockout.js"></script>
 </body>
 </html>

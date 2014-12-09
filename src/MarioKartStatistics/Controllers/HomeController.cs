@@ -14,35 +14,11 @@ namespace MarioKartStatistics.Controllers
         public HomeController(MKContext mkContext)
         {
             _mkContext = mkContext;
-            _mkContext.Heats.RemoveRange(_mkContext.Heats.ToList());
-            _mkContext.Heats.Add(new Heat
-            {
-                Date = DateTime.Now,
-                Scores = new List<HeatScore>
-                {
-                    new HeatScore
-                    {
-                        Score = 5,
-                        Player = new Player
-                        {
-                            Name = "A"
-                        }
-                    },
-                    new HeatScore
-                    {
-                        Score = 10,
-                        Player = new Player
-                        {
-                            Name = "B"
-                        }
-                    }
-                },
-            });
-            _mkContext.SaveChanges();
         }
         public IActionResult Index()
         {
             var heats = _mkContext.Heats
+                .Include(x => x.Scores)
                 .ToList()
                 .Select(x => Convert(x))
                 .ToList();
@@ -51,9 +27,14 @@ namespace MarioKartStatistics.Controllers
         }
 
         [HttpPost]
-        public void AddResult(NewHeatResult result)
+        public IActionResult AddResult(NewHeatResult heat)
         {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToAction("Index");
+            }
 
+            return RedirectToAction("Index");
         }
 
         private HeatModel Convert(Heat heat)
@@ -73,18 +54,66 @@ namespace MarioKartStatistics.Controllers
         }
     }
 
-    public class NewHeatResult
+    public class NewHeatResult : IValidatableObject
     {
-        [Required]
-        IList<NewHeatScore> Scores { get; set; }
+        public IList<NewHeatScore> Scores { get; set; }
+
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            if(Scores == null)
+            {
+                yield break;
+            }
+
+            var scoresWithPlayers = Scores
+                .Where(x => x.Player.HasValue)
+                .ToList();
+            if (scoresWithPlayers.Count == 0)
+            {
+                yield return new ValidationResult("A heat must contain at least one player");
+            }
+
+            if(scoresWithPlayers.Count > 4)
+            {
+                yield return new ValidationResult("A heat can't contain more than four players");
+            }
+
+            var players = scoresWithPlayers
+                .Select(x => x.Player)
+                .ToList();
+
+            var numberOfUniquePlayers = players.Distinct().Count();
+            if(numberOfUniquePlayers != players.Count)
+            {
+                yield return new ValidationResult("A player can only score once in a heat");
+            }
+        }
     }
 
-    public class NewHeatScore
+    public class NewHeatScore : IValidatableObject
     {
-        [Required]
         public int? Player { get; set; }
-        [Required]
         public int? Points { get; set; }
+
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            if (Player.HasValue && !Points.HasValue)
+            {
+                yield return new ValidationResult("Points must be provided");
+            }
+        }
+    }
+
+    public class HomeViewModel
+    {
+        public IEnumerable<HeatModel> Heats { get; set; }
+        public IEnumerable<PlayerModel> Players { get; set; }
+    }
+
+    public class PlayerModel
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
     }
 
     public class HeatModel
