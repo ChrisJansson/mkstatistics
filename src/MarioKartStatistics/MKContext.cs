@@ -9,6 +9,7 @@ namespace MarioKartStatistics
     public class MKContext : DbContext
     {
         public DbSet<Heat> Heats { get; set; }
+        public DbSet<Player> Players { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -17,9 +18,16 @@ namespace MarioKartStatistics
                 .Key(x => x.Id);
 
             modelBuilder.Entity<Heat>()
-                .OneToMany(x => x.Scores)
-                .ForeignKey(x => x.HeatId)
+               .OneToMany(x => x.Scores)
+               .ForeignKey(x => x.HeatId)
                 .Required();
+
+            modelBuilder.Entity<HeatScore>()
+                .Key(x => new { x.Id, x.HeatId });
+
+            modelBuilder.Entity<HeatScore>()
+                .Property(x => x.Id)
+                .GenerateValuesOnAdd();
 
             modelBuilder.Entity<HeatScore>()
                 .ManyToOne(x => x.Player)
@@ -29,17 +37,17 @@ namespace MarioKartStatistics
 
     public class Heat
     {
-        public int Id { get; protected set; }
+        public int Id { get; set; }
 
         public DateTime Date { get; set; }
 
-        public virtual List<HeatScore> Scores { get; set; }
+        public virtual ICollection<HeatScore> Scores { get; set; }
     }
 
     public class HeatScore
     {
-        public int Id { get; protected set; }
-        public int HeatId { get; protected set; }
+        public int Id { get; set; }
+        public int HeatId { get; set; }
         public virtual Player Player { get; set; }
         public int Score { get; set; }
     }
