@@ -46,13 +46,10 @@ namespace MarioKartStatistics.Controllers
                 return RedirectToAction("Index");
             }
 
-
             var newHeat = new Heat
             {
                 Date = DateTime.Now,
             };
-
-
 
             _mkContext.Heats.Add(newHeat);
             _mkContext.SaveChanges();
