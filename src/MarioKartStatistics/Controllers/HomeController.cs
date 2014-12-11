@@ -23,6 +23,8 @@ namespace MarioKartStatistics.Controllers
 
             var heats = _mkContext.Heats
                 .Include(x => x.Scores)
+                .OrderByDescending(x => x.Date)
+                .Take(50)
                 .ToList()
                 .Select(x => Convert(x))
                 .ToList();
