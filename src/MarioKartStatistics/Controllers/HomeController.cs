@@ -17,13 +17,23 @@ namespace MarioKartStatistics.Controllers
         }
         public IActionResult Index()
         {
+            var players = _mkContext.Players
+                .Select(x => new PlayerModel { Id = x.Id, Name = x.Name })
+                .ToList();
+
             var heats = _mkContext.Heats
                 .Include(x => x.Scores)
                 .ToList()
                 .Select(x => Convert(x))
                 .ToList();
 
-            return View(heats);
+            var homeViewModel = new HomeViewModel
+            {
+                Heats = heats,
+                Players = players
+            };
+
+            return View(homeViewModel);
         }
 
         [HttpPost]
@@ -34,6 +44,30 @@ namespace MarioKartStatistics.Controllers
                 return RedirectToAction("Index");
             }
 
+
+            var newHeat = new Heat
+            {
+                Date = DateTime.Now,
+            };
+
+
+
+            _mkContext.Heats.Add(newHeat);
+            _mkContext.SaveChanges();
+
+            var scores = heat.Scores
+            .Where(x => x.Player.HasValue)
+            .Select(x => new HeatScore
+            {
+                PlayerId = _mkContext.Players.Single(p => p.Id == x.Player).Id,
+                Score = x.Points.Value,
+                HeatId = newHeat.Id
+            })
+            .ToList();
+
+            _mkContext.HeatScores.AddRange(scores);
+            _mkContext.SaveChanges();
+
             return RedirectToAction("Index");
         }
 
@@ -43,9 +77,9 @@ namespace MarioKartStatistics.Controllers
             {
                 Date = heat.Date,
                 Scores = heat.Scores
-                .Select(x => new HeatModel.HeatScoreModel()
+                .Select(x => new HeatModel.HeatScoreModel
                 {
-                    PlayerName = x.Player.Name,
+                    PlayerName = _mkContext.Players.Single(p => p.Id == x.PlayerId).Name,
                     Score = x.Score,
                 })
                 .OrderByDescending(x => x.Score)
@@ -60,7 +94,7 @@ namespace MarioKartStatistics.Controllers
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            if(Scores == null)
+            if (Scores == null)
             {
                 yield break;
             }
@@ -73,7 +107,7 @@ namespace MarioKartStatistics.Controllers
                 yield return new ValidationResult("A heat must contain at least one player");
             }
 
-            if(scoresWithPlayers.Count > 4)
+            if (scoresWithPlayers.Count > 4)
             {
                 yield return new ValidationResult("A heat can't contain more than four players");
             }
@@ -83,7 +117,7 @@ namespace MarioKartStatistics.Controllers
                 .ToList();
 
             var numberOfUniquePlayers = players.Distinct().Count();
-            if(numberOfUniquePlayers != players.Count)
+            if (numberOfUniquePlayers != players.Count)
             {
                 yield return new ValidationResult("A player can only score once in a heat");
             }

@@ -13,7 +13,7 @@ namespace MarioKartStatistics.Migrations
         {
             get
             {
-                return "201412041848432_initial";
+                return "201412111556161_initial";
             }
         }
         

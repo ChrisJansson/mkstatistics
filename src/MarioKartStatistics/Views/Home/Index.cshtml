@@ -1,4 +1,4 @@
-﻿@model IEnumerable<MarioKartStatistics.Controllers.HeatModel>
+﻿@model MarioKartStatistics.Controllers.HomeViewModel
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -42,7 +42,7 @@
                     <td class="col-md-1"><h3>Points</h3></td>
                 </tr>
             </thead>
-            @foreach (var heat in Model)
+            @foreach (var heat in Model.Heats)
             {
                 var winner = heat.Scores.First();
                 <tr>
@@ -70,8 +70,10 @@
                                 <div class="form-group">
                                     <select name="Scores[@i].Player" class="form-control">
                                         <option selected disabled hidden value=""></option>
-                                        <option value="0">A</option>
-                                        <option value="1">B</option>
+                                        @foreach(var player in Model.Players)
+                                        {
+                                            <option value="@player.Id">@player.Name</option>
+                                        }
                                     </select>
                                 </div>
                             </td>
