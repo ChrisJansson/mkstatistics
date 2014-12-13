@@ -4,6 +4,7 @@ using Microsoft.Framework.ConfigurationModel;
 using Microsoft.Framework.DependencyInjection;
 using Microsoft.Framework.Logging;
 using System.Diagnostics;
+using System;
 
 namespace MarioKartStatistics
 {
@@ -28,7 +29,10 @@ namespace MarioKartStatistics
             //var configuration = new NLog.Config.LoggingConfiguration();
             //configuration.
             //loggerFactory.AddNLog(new global::NLog.LogFactory();
-            loggerFactory.AddProvider(new DiagnosticsLoggerProvider(new SourceSwitch("Microsoft.AspNet", "Verbose") { Level = SourceLevels.All }, new ConsoleTraceListener()));
+            loggerFactory.AddProvider(new DiagnosticsLoggerProvider(new SourceSwitch("A", "Verbose"), new ConsoleTraceListener()));
+
+            var logger = loggerFactory.Create("aaa");
+            logger.WriteError("Logged error!!");
 
             app.UseMvc();
         }
