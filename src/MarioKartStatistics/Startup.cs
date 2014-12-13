@@ -2,6 +2,8 @@
 using Microsoft.Data.Entity;
 using Microsoft.Framework.ConfigurationModel;
 using Microsoft.Framework.DependencyInjection;
+using Microsoft.Framework.Logging;
+using System.Diagnostics;
 
 namespace MarioKartStatistics
 {
@@ -21,8 +23,13 @@ namespace MarioKartStatistics
             services.AddMvc();
         }
         
-        public void Configure(IApplicationBuilder app)
+        public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory)
         {
+            //var configuration = new NLog.Config.LoggingConfiguration();
+            //configuration.
+            //loggerFactory.AddNLog(new global::NLog.LogFactory();
+            loggerFactory.AddProvider(new DiagnosticsLoggerProvider(new SourceSwitch("Microsoft.AspNet", "Verbose") { Level = SourceLevels.All }, new ConsoleTraceListener()));
+
             app.UseMvc();
         }
     }
