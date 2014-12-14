@@ -26,14 +26,12 @@ namespace MarioKartStatistics
         
         public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory)
         {
-            //var configuration = new NLog.Config.LoggingConfiguration();
-            //configuration.
-            //loggerFactory.AddNLog(new global::NLog.LogFactory();
-            loggerFactory.AddProvider(new DiagnosticsLoggerProvider(new SourceSwitch("A", "Verbose"), new ConsoleTraceListener()));
+            loggerFactory.AddNLog(new global::NLog.LogFactory());
 
             var logger = loggerFactory.Create("aaa");
             logger.WriteError("Logged error!!");
 
+            app.UseErrorHandler("/Home/Error");
             app.UseMvc();
         }
     }

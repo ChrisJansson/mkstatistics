@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNet.Mvc;
+using Microsoft.Framework.Logging;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
 using System.Linq;
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
@@ -35,7 +37,14 @@ namespace MarioKartStatistics.Controllers
                 Players = players
             };
 
+            throw new Exception("AN ERROR THAT SHOUDL BE LOGGED");
+
             return View(homeViewModel);
+        }
+
+        public IActionResult Error()
+        {
+            return View();
         }
 
         [HttpPost]
