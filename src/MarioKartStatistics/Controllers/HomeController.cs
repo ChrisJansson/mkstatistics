@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNet.Mvc;
-using Microsoft.Framework.Logging;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -16,6 +15,7 @@ namespace MarioKartStatistics.Controllers
         public HomeController(MKContext mkContext)
         {
             _mkContext = mkContext;
+            Trace.TraceError("TRACING ERROR!");
         }
         public IActionResult Index()
         {
@@ -36,8 +36,6 @@ namespace MarioKartStatistics.Controllers
                 Heats = heats,
                 Players = players
             };
-
-            throw new Exception("AN ERROR THAT SHOUDL BE LOGGED");
 
             return View(homeViewModel);
         }
