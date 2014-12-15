@@ -5,8 +5,6 @@ using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Linq;
 
-// For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace MarioKartStatistics.Controllers
 {
     public class HomeController : Controller
@@ -133,6 +131,8 @@ namespace MarioKartStatistics.Controllers
     public class NewHeatScore : IValidatableObject
     {
         public int? Player { get; set; }
+
+        [Range(0, 60)]
         public int? Points { get; set; }
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
