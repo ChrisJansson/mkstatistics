@@ -42,23 +42,27 @@
                     <td class="col-md-1"><h3>Points</h3></td>
                 </tr>
             </thead>
+            @{
+                int heatNumber = 0;
+            }
             @foreach (var heat in Model.Heats)
             {
                 var winner = heat.Scores.First();
-                <tr class="success">
+                <tr class="success" onclick="rowClicked(@heatNumber)">
                     <td class="col-md-1">@heat.Date</td>
                     <td class="col-md-1">@winner.PlayerName</td>
                     <td class="col-md-1">@winner.Score</td>
                 </tr>
                 var rest = heat.Scores.Skip(1);
-                foreach(var playerScoring in rest)
+                foreach (var playerScoring in rest)
                 {
-                    <tr>
+                    <tr style="display: none" class="heat@(heatNumber)">
                         <td class="col-md-1"></td>
                         <td class="col-md-1">@playerScoring.PlayerName</td>
                         <td class="col-md-1">@playerScoring.Score</td>
                     </tr>
                 }
+                heatNumber++; 
             }
         </table>
         <h1>NEW</h1>
@@ -79,7 +83,7 @@
                                 <div class="form-group">
                                     <select name="Scores[@i].Player" class="form-control">
                                         <option selected disabled hidden value=""></option>
-                                        @foreach(var player in Model.Players)
+                                        @foreach (var player in Model.Players)
                                         {
                                             <option value="@player.Id">@player.Name</option>
                                         }
@@ -105,5 +109,11 @@
     <script src="~/lib/jquery/jquery.js"></script>
     <script src="~/lib/bootstrap/bootstrap.js"></script>
     <script src="~/lib/knockout/knockout.js"></script>
+    <script type="text/javascript">
+        var rowClicked = function(heatNumber){
+            var elements = $(".heat" + heatNumber);
+            elements.css("display", "table-row")
+        };
+    </script>
 </body>
 </html>
