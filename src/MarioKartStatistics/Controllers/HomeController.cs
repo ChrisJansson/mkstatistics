@@ -79,7 +79,7 @@ namespace MarioKartStatistics.Controllers
         {
             return new HeatModel()
             {
-                Date = heat.Date,
+                Date = heat.Date.ToString(),
                 Scores = heat.Scores
                 .Select(x => new HeatModel.HeatScoreModel
                 {
@@ -158,7 +158,7 @@ namespace MarioKartStatistics.Controllers
 
     public class HeatModel
     {
-        public DateTime Date { get; set; }
+        public string Date { get; set; }
         public List<HeatScoreModel> Scores { get; set; }
         public class HeatScoreModel
         {

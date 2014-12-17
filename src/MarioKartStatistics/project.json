@@ -19,7 +19,8 @@
         "Microsoft.Framework.ConfigurationModel.Json": "1.0.0-beta1",
         "Microsoft.Framework.Logging": "1.0.0-beta1",
         "Microsoft.Framework.Logging.NLog": "1.0.0-beta1",
-        "Microsoft.AspNet.Diagnostics": "1.0.0-beta1"
+        "Microsoft.AspNet.Diagnostics": "1.0.0-beta1",
+        "Newtonsoft.Json": "6.0.6"
     },
     "commands": {
         /* Change the port number when you are self hosting this application */

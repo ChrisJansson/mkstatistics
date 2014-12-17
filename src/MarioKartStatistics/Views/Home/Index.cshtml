@@ -1,4 +1,5 @@
-﻿@model MarioKartStatistics.Controllers.HomeViewModel
+﻿@using Newtonsoft.Json;
+@model MarioKartStatistics.Controllers.HomeViewModel
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -42,28 +43,18 @@
                     <td class="col-md-1"><h3>Points</h3></td>
                 </tr>
             </thead>
-            @{
-                int heatNumber = 0;
-            }
-            @foreach (var heat in Model.Heats)
-            {
-                var winner = heat.Scores.First();
-                <tr class="success" onclick="rowClicked(@heatNumber)">
-                    <td class="col-md-1">@heat.Date</td>
-                    <td class="col-md-1">@winner.PlayerName</td>
-                    <td class="col-md-1">@winner.Score</td>
+            <tbody data-bind="foreach: allHeats">
+                <tr>
+                    <!-- ko if: isWinner -->
+                    <td data-bind="text: date" class="col-md-1 success"></td>
+                    <!-- /ko -->
+                    <!-- ko ifnot: isWinner -->
+                    <td class="col-md-1"></td>
+                    <!-- /ko -->
+                    <td data-bind="text: name" class="col-md-1"></td>
+                    <td data-bind="text: points" class="col-md-1"></td>
                 </tr>
-                var rest = heat.Scores.Skip(1);
-                foreach (var playerScoring in rest)
-                {
-                    <tr style="display: none" class="heat@(heatNumber)">
-                        <td class="col-md-1"></td>
-                        <td class="col-md-1">@playerScoring.PlayerName</td>
-                        <td class="col-md-1">@playerScoring.Score</td>
-                    </tr>
-                }
-                heatNumber++; 
-            }
+            </tbody>
         </table>
         <h1>NEW</h1>
         @using (Html.BeginForm("AddResult", "Home", FormMethod.Post, new { @class = "form-vertical", role = "form" }))
@@ -109,8 +100,32 @@
     <script src="~/lib/jquery/jquery.js"></script>
     <script src="~/lib/bootstrap/bootstrap.js"></script>
     <script src="~/lib/knockout/knockout.js"></script>
+    <script src="~/lib/knockout-mapping/knockout.mapping.js"></script>
     <script type="text/javascript">
-        var rowClicked = function(heatNumber){
+        var modelJson = '@Html.Raw(JsonConvert.SerializeObject(Model))';
+        var model = JSON.parse(modelJson);
+
+        var viewModel = {
+            heats: ko.observableArray(),
+            allHeats: ko.observableArray(),
+        };
+
+        model.Heats.forEach(function (heat) {
+            var winner = heat.Scores[0];
+            heat.Scores.forEach(function (score) {
+                var isWinner = score === winner;
+                var scoreViewModel = {
+                    isWinner: isWinner,
+                    date: heat.Date,
+                    name: score.PlayerName,
+                    points: score.Score,
+                };
+                viewModel.allHeats.push(scoreViewModel);
+            });
+        });
+
+        ko.applyBindings(viewModel);
+        var rowClicked = function (heatNumber) {
             var elements = $(".heat" + heatNumber);
             elements.css("display", "table-row")
         };
