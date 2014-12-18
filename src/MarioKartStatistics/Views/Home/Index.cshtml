@@ -9,7 +9,7 @@
     <title>Title!!</title>
 
     <!-- Bootstrap -->
-    <link href="~/lib/bootstrap/bootstrap.css" rel="stylesheet">
+    <link href="~/lib/bootstrap/css/bootstrap.css" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -43,10 +43,15 @@
                     <td class="col-md-1"><h3>Points</h3></td>
                 </tr>
             </thead>
-            <tbody data-bind="foreach: allHeats">
+            <tbody data-bind="foreach: heats">
                 <tr>
                     <!-- ko if: isWinner -->
-                    <td data-bind="text: date" class="col-md-1 success"></td>
+                    <td class="col-md-1 success">
+                        <button data-bind="click: expand" class="btn btn-default btn-xs" aria-label="Expand">
+                            <span class="glyphicon glyphicon-expand" aria-hidden="true"></span>
+                        </button>
+                        <label data-bind="text: date"></label>
+                    </td>
                     <!-- /ko -->
                     <!-- ko ifnot: isWinner -->
                     <td class="col-md-1"></td>
@@ -98,32 +103,56 @@
         }
     </div>
     <script src="~/lib/jquery/jquery.js"></script>
-    <script src="~/lib/bootstrap/bootstrap.js"></script>
+    <script src="~/lib/bootstrap/js/bootstrap.js"></script>
     <script src="~/lib/knockout/knockout.js"></script>
-    <script src="~/lib/knockout-mapping/knockout.mapping.js"></script>
     <script type="text/javascript">
         var modelJson = '@Html.Raw(JsonConvert.SerializeObject(Model))';
         var model = JSON.parse(modelJson);
 
         var viewModel = {
-            heats: ko.observableArray(),
+            heats: ko.observable(),
             allHeats: ko.observableArray(),
         };
+
+        viewModel.computeHeats = function () {
+            var visibleHeats = viewModel.allHeats().filter(function (element) {
+                return element.isExpanded() || element.isWinner;
+            });
+            viewModel.heats(visibleHeats);
+        };
+
+        //viewModel.heats = ko.computed(function () {
+        //    return viewModel.allHeats().filter(function (element) {
+        //        return element.isExpanded() || element.isWinner;
+        //    });
+        //});
 
         model.Heats.forEach(function (heat) {
             var winner = heat.Scores[0];
             heat.Scores.forEach(function (score) {
                 var isWinner = score === winner;
                 var scoreViewModel = {
+                    heat: heat,
+                    isExpanded: ko.observable(false),
                     isWinner: isWinner,
                     date: heat.Date,
                     name: score.PlayerName,
                     points: score.Score,
                 };
+                scoreViewModel.expand = function () {
+                    viewModel.allHeats().forEach(function (element) {
+                        if (element.heat === heat)
+                            element.isExpanded(!element.isExpanded());
+
+                    });
+                    viewModel.computeHeats();
+                };
+
                 viewModel.allHeats.push(scoreViewModel);
             });
         });
 
+        viewModel.computeHeats();
         ko.applyBindings(viewModel);
         var rowClicked = function (heatNumber) {
             var elements = $(".heat" + heatNumber);
